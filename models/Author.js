@@ -8,6 +8,6 @@ const AuthorSchema= new mongoose.Schema({
     avatar: String
 })
 
-const Author= mongoose.model('Author',AuthorSchema) // diciamo a mongoose di creare nel db 
+const Author= mongoose.model('Author',AuthorSchema) // diciamo a mongoose di creare nel db come definito nello schema
 
 export default Author
