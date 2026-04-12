@@ -3,12 +3,19 @@ import Author from "../models/Author.js"
 
 export async function findAll(req, res) {
     try {
-        const authors = await Author.find()
+        const{page, limit} = req.query
+        const authorsQuery = Author.find()
+        if (page && limit) {
+            authorsQuery.skip((page - 1) * limit).limit(limit)
+        }
+        const authors = await authorsQuery
         res.status(200).json(authors)
     } catch (error) {
         res.status(500).json({message: error.message})
     }
 }
+
+
 
 export async function findById(req, res) {
     try {
@@ -29,11 +36,11 @@ export async function findById(req, res) {
 
 export async function create(req, res) {
     try {
-        const { name, surname, email, birthDate, avatar } = req.body
+        const { name, surname, email, password, birthDate, avatar } = req.body
         if (!name || !surname) {
             return res.status(400).json({ message: "Name and surname are required" })
         }
-        const author = new Author({ name, surname, email, birthDate, avatar })
+        const author = new Author({ name, surname, email, password, birthDate, avatar })
         const newAuthor = await author.save()
         res.status(201).json(newAuthor)
     } catch (error) {

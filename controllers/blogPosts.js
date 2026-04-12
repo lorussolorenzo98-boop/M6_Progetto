@@ -3,7 +3,12 @@ import BlogPost from "../models/BlogPosts.js";
 
 export async function findAll(req, res) {
     try {
-        const blogPosts = await BlogPost.find()
+        const {page, limit} = req.query
+        const blogPostsQuery = BlogPost.find()
+        if (page && limit) {
+            blogPostsQuery.skip((page - 1) * limit).limit(limit)
+        }
+        const blogPosts = await blogPostsQuery
         res.status(200).json(blogPosts)
     } catch (error) {
         res.status(500).json({ message: error.message })

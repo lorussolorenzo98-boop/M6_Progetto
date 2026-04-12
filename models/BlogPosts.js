@@ -1,5 +1,20 @@
 import mongoose from "mongoose";
 
+const CommentSchema = new mongoose.Schema({
+    text: {
+        type: String,
+        required: true,
+        minLength: 1,
+        maxLength: 300
+    },
+    author: String,
+},
+{
+    timestamps: true
+}
+);
+
+
 const BlogPostSchema= new mongoose.Schema ({
     category: String,
     title: String,
@@ -9,7 +24,8 @@ const BlogPostSchema= new mongoose.Schema ({
         unit: String
     },
     author: String,
-    content: String
+    content: String,
+    comments: [CommentSchema]
 })
 
 const BlogPost = mongoose.model('BlogPost', BlogPostSchema)
