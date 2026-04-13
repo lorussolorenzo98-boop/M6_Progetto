@@ -45,19 +45,26 @@ export async function findById(req, res) {
 
 export async function create(req, res) {
     try {
-        const {blogPostId} = req.params
+        const { blogPostId } = req.params
+
         if (!mongoose.Types.ObjectId.isValid(blogPostId)) {
             return res.status(400).json({ message: "Invalid Blog post ID" })
         }
-        const {text, author}= req.body
+
+        const { text } = req.body
+
         const post = await BlogPost.findById(blogPostId)
-        if(!post) {
-            return res.status(404).json({message: "blog post not found"})
+        if (!post) {
+            return res.status(404).json({ message: "blog post not found" })
         }
+
+        const author = `${req.authUser.name} ${req.authUser.surname}`
+
         post.comments.push({
-            text, 
+            text,
             author
         })
+
         await post.save()
         res.status(200).json(post.comments[post.comments.length - 1])
     } catch (error) {

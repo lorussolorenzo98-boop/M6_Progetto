@@ -4,10 +4,23 @@ import bcrypt from "bcrypt"
 const AuthorSchema = new mongoose.Schema({
     name: String,
     surname: String,
-    email: String,
-    password: String,
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    password: {
+        type: String,
+        required: function () {
+            return !this.googleId
+        }
+    },
     birthDate: String,
-    avatar: String
+    avatar: String,
+    googleId: {
+        type: String,
+        required: false
+    }
 });
 
 //prima che venga salvato nel db esegui questa funzione
@@ -18,7 +31,6 @@ AuthorSchema.pre('save', async function () {
     }
     const salt = await bcrypt.genSalt(10)
     this.password = await bcrypt.hash(this.password, salt)
-
 
 })
 
