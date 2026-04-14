@@ -1,36 +1,53 @@
-import express from "express"
-import dotenv from "dotenv"
+import express from "express";
+import dotenv from "dotenv";
 import { connect } from "./db.js";
 import authorRouter from "./routes/authors.js";
 import blogPostRouter from "./routes/blogPosts.js";
-import cors from 'cors'
+import cors from "cors";
 import commentsRouter from "./routes/comments.js";
 import authRouter from "./routes/auth.js";
-import passport from "passport"
-import session from "express-session"
-import "./middlewares/passport.js"
+import passport from "passport";
+import session from "express-session";
+import "./middlewares/passport.js";
 
-dotenv.config()
-connect()
+dotenv.config();
+connect();
 
 const app = express();
-app.use(cors())
-app.use(express.json()) //diciamo che tutto cio che arriva nel body deve essere codificato nel json
-app.use(session({
-    secret: "secret",
-    resave: false,
-    saveUninitialized: true
-}))
 
-app.use(passport.initialize())
-app.use(passport.session())
-app.get('/', (req, res) => {
-    res.status(200).json({ message: 'ciao' })
-})
-app.use('/authors', authorRouter)
-app.use('/blogPosts', blogPostRouter)
-app.use('/blogPosts/:blogPostId/comments', commentsRouter)
-app.use('/auth', authRouter)
-app.listen(process.env.PORT, () => {
-    console.log("server in ascolto")
-})
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3001",
+      "https://TUO-FRONTEND.vercel.app",
+    ],
+  })
+);
+
+app.use(express.json());
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.get("/", (req, res) => {
+  res.status(200).json({ message: "ciao" });
+});
+
+app.use("/authors", authorRouter);
+app.use("/blogPosts", blogPostRouter);
+app.use("/blogPosts/:blogPostId/comments", commentsRouter);
+app.use("/auth", authRouter);
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`server in ascolto sulla porta ${PORT}`);
+});
