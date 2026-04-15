@@ -19,7 +19,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3001",
-      "https://TUO-FRONTEND.vercel.app",
+      "https://striveblog-mu.vercel.app",
     ],
   })
 );
